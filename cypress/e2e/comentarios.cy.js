@@ -9,16 +9,16 @@ describe("App de Comentarios", () => {
 
   it("Agregar un nuevo comentario", () => {
     agregarComentario(
-      "Doe",
-      "John",
-      "john.doe@example.com",
+      "Perez",
+      "Juan",
+      "Perezj@gmail.com",
       "Comentario de prueba",
       "Este es un mensaje de prueba"
     );
 
-    cy.contains("Doe").should("be.visible");
-    cy.contains("John").should("be.visible");
-    cy.contains("john.doe@example.com").should("be.visible");
+    cy.contains("Perez").should("be.visible");
+    cy.contains("Juan").should("be.visible");
+    cy.contains("Perezj@gmail.com").should("be.visible");
     cy.contains("Comentario de prueba").should("be.visible");
     cy.contains("Este es un mensaje de prueba").should("be.visible");
   });
@@ -43,14 +43,34 @@ describe("App de Comentarios", () => {
 
   it("Filtrar comentarios por email", () => {
     cy.get('#filtrarPorEmailForm input[name="email"]').type(
-      "john.doe@example.com"
+      "Perezj@gmail.com"
     );
     cy.get('#filtrarPorEmailForm button[type="submit"]')
       .contains("Buscar")
       .click();
 
-    cy.contains("john.doe@example.com").should("be.visible");
+    cy.contains("Perezj@gmail.com").should("be.visible");
   });
+
+  it('Actualizar un comentario', () => {
+    cy.get("table tbody tr th").invoke("text").then((texto) => {
+      cy.get(`#editarBtn[onclick="displayFormularioEditar('${texto}')"]`).click();
+
+    cy.get('.hidden input[name="apellido"]').clear().type('Gutierrez');
+    cy.get('.hidden input[name="nombre"]').clear().type('José');
+    cy.get('.hidden input[name="email"]').clear().type('Gutierrezj@gmail.com');
+    cy.get('.hidden input[name="asunto"]').clear().type('Nuevo comentario de prueba');
+    cy.get('.hidden textarea[name="mensaje"]').clear().type('Este es un nuevo mensaje de prueba');
+
+    cy.get('button[type="submit"]').contains('Guardar').click();
+
+    cy.contains('Gutierrez').should('be.visible');
+    cy.contains('José').should('be.visible');
+    cy.contains('Gutierrezj@gmail.com').should('be.visible');
+    cy.contains('Nuevo comentario de prueba').should('be.visible');
+    cy.contains('Este es un nuevo mensaje de prueba').should('be.visible');
+    });
+});
 
   it("Eliminar un comentario", () => {
     cy.get("table tbody tr th").invoke("text").then((texto) => {
@@ -61,9 +81,9 @@ describe("App de Comentarios", () => {
 
   it("Eliminar todos los comentarios", () => {
     agregarComentario(
-      "Doe",
-      "John",
-      "john.doe@example.com",
+      "Perez",
+      "Juan",
+      "Perezj@gmail.com",
       "Comentario de prueba",
       "Este es un mensaje de prueba"
     );
